@@ -6,6 +6,7 @@ const tabs = [
   { to: "/detect", label: "詐騙偵測", icon: "🔍" },
   { to: "/game", label: "模擬遊戲", icon: "🎮" },
   { to: "/stats", label: "詐騙統計", icon: "📊" },
+  { to: "/about", label: "關於我們", icon: "💙" },
 ];
 </script>
 

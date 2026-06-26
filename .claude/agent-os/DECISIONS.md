@@ -66,3 +66,11 @@
 - **Decision**: 新增 `edge-jetson/`：攝像頭擷取 → 端側推論（OCR/影像或文字模型）→ 呼叫平台 `/api/detect`。先寫程式，待硬體再實跑。
 - **Rationale**: 作業加分項；軟硬結合展示。先備好程式不阻塞主線。
 - **Consequence**: 程式可在無 Jetson 時以 mock 攝像頭驗證流程；實機需 `playwright`/`jetson` 相依與硬體。
+
+---
+
+## D009 — 顧問藍圖驅動的品質提升（2026-06-26，多顧問 Workflow）
+
+- **Decision**: 依 multi-consultant workflow（eval-designer / 產品評分 / permission-architect + 總顧問收斂）執行 6 大改善：①統計改真實官方數據+標出處（修「示意值卻標官方」的誠信地雷）②上線安全硬閘（CORS/限流/Gemini cap/出境揭露/detections 去個資）③held-out 模型評估（停用訓練集準確率，Recall 100%/FPR 7.7%）④資料分析升級（YoY+真實樣本文字分析→ANALYSIS.md）⑤敘事與人文（DEMO_SCRIPT/首頁鉤子/About 使命頁/UI 限制標註）⑥繳交完整性（REFLECTION/PROPOSAL_DRAFT/ARCHITECTURE/SUBMISSION_CHECKLIST）。
+- **Rationale**: 顧問群一致指出技術骨架已成形，缺的是「可信度」與「故事」；最大單點風險為統計誠信。
+- **Consequence**: 偵測 ensemble 改模型主導（規則僅強烈命中才加分）；新增 testset/evaluate；多份 docs 成為繳交物來源。剩部署執行（需帳號）與錄影/團隊釐清（需使用者）。

@@ -4,17 +4,23 @@ const router = useRouter();
 const features = [
   { icon: "🔍", title: "詐騙偵測", desc: "貼上可疑訊息或網址，AI（自訓模型 + Gemini）判斷是否詐騙並解釋理由。", to: "/detect" },
   { icon: "🎮", title: "模擬遊戲", desc: "情境問答，邊玩邊學會辨識常見詐騙手法。", to: "/game" },
-  { icon: "📊", title: "詐騙統計", desc: "2021–2025 詐騙趨勢與類型分布，數據一目了然。", to: "/stats" },
+  { icon: "📊", title: "詐騙統計", desc: "官方年度趨勢與我們收集的真實案例類型分布。", to: "/stats" },
 ];
 </script>
 
 <template>
-  <div class="card hero">
-    <h2>🛡️ 守護你，不被詐騙</h2>
-    <p class="muted">
-      本平台用真實的官方詐騙資料訓練偵測模型，並提供互動教學與數據視覺化，
-      幫你看穿詐騙話術。資料來源：警政署 165 反詐騙開放資料。
-    </p>
+  <!-- 問題鉤子（賣產品 / 說故事的開場）-->
+  <div class="card hook">
+    <h2>每天 336 件詐騙，一年捲走超過 500 億</h2>
+    <p>2024 年全台詐騙案件 <strong>122,805 件</strong>、財損 <strong>502 億元</strong>，五年成長逾四倍。
+       受害的可能是想多賺一點的上班族、渴望陪伴的長輩、第一次網購的學生。</p>
+    <p class="mission">我們相信：<strong>少一個人被騙，就少一個破碎的家。</strong>
+       這個平台，就是想把「看穿詐騙」這件事，變成每個人都做得到。</p>
+    <div class="cta">
+      <button class="btn" @click="router.push('/detect')">立即偵測可疑訊息</button>
+      <button class="btn ghost" @click="router.push('/about')">我們為什麼做這個 →</button>
+    </div>
+    <p class="src">數據來源：內政部刑事警察局 / 165 打詐儀錶板</p>
   </div>
 
   <div class="grid">
@@ -28,7 +34,13 @@ const features = [
 </template>
 
 <style scoped>
-.hero h2 { font-size: 1.6rem; }
+.hook h2 { font-size: 1.7rem; color: #16213e; line-height: 1.4; }
+.hook strong { color: var(--danger); }
+.mission { background: #f0f5ff; border-left: 4px solid var(--brand); padding: .7rem .9rem; border-radius: 0 8px 8px 0; }
+.mission strong { color: var(--brand); }
+.cta { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; }
+.btn.ghost { background: #fff; color: var(--brand); border: 1.5px solid var(--brand); }
+.src { font-size: .8rem; color: var(--muted); margin-top: .8rem; }
 .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 680px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 .feature { cursor: pointer; transition: transform .15s, box-shadow .15s; margin: 0; }

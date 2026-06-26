@@ -24,10 +24,10 @@ A web platform that detects scams (model + Google Gemini), teaches users via sim
 
 | Field | Value |
 |---|---|
-| Session | 2026-06-26 — 立案 + 全棧 + 對齊計畫書深化 |
-| Completed | Phase 0–4+6：資料層、雙後端(HTTP驗證)、Vue(build通過)、爬蟲+165官方真實資料、自訓模型+Gemini ensemble(偵測5/5)、Jetson端(端到端驗證)、render+AWS雙部署設定。決策 D001–D008。 |
-| Next action | 使用者部署(render主/AWS備)+填Gemini key；錄影+心得(Phase 7) |
-| Blocker | 僅外部資源；程式無 blocker |
+| Session | 2026-06-26 — 立案→全棧→顧問藍圖品質提升 |
+| Completed | Phase 0–4+6 + 顧問藍圖6項(D009)：統計真實化(官方數據+誠信標示)、上線安全硬閘、held-out模型評估(Recall100%/FPR7.7%)、分析升級(ANALYSIS.md)、敘事人文(DEMO_SCRIPT/About/首頁鉤子)、繳交docs(REFLECTION/PROPOSAL_DRAFT/ARCHITECTURE/SUBMISSION_CHECKLIST)。決策D001–D009。 |
+| Next action | 使用者：部署render+填key、錄1080p、回填計畫書、釐清團隊(#8) |
+| Blocker | 僅外部資源（帳號/錄影/硬體/團隊）；程式無 blocker |
 
 ## How To Resume This Project
 
