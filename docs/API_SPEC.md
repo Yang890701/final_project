@@ -27,12 +27,13 @@ base: `VITE_API_URL`（本機預設 `http://localhost:8000`）
 ```
 
 ### `GET /api/stats`
-詐騙統計（給前端繪圖；SQL 聚合，非 LLM）。
+詐騙統計（給前端繪圖；SQL 聚合，非 LLM）。年度為官方真實數據(帶出處)，類型分布為實際收集樣本。
 ```jsonc
-// query: ?from=2021&to=2025
+// query: ?from=2020&to=2025
 {
-  "by_year":     [ { "year": 2021, "case_count": 25100, "loss_amount": 6960000000 }, ... ],
-  "by_category": [ { "category": "假投資", "case_count": 68500, "loss_amount": 33300000000 }, ... ]
+  "by_year": [ { "year": 2024, "case_count": 122805, "loss_amount": 50200000000, "source": "刑事局/165打詐儀錶板2024" }, ... ],
+  "by_sample_type": [ { "scam_type": "釣魚簡訊", "count": 9 }, ... ],   // 由真實收集的 scam_examples 計算
+  "note": "資料口徑與限制說明（誠信揭露）"
 }
 ```
 

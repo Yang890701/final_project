@@ -48,6 +48,10 @@ async function run() {
       {{ loading ? "分析中…" : "開始偵測" }}
     </button>
     <p v-if="error" style="color:var(--danger);margin-top:.8rem">{{ error }}</p>
+    <p class="disclosure">
+      🔒 隱私說明：您的訊息會傳送至本平台後端分析；若啟用 AI 解釋，會一併送交 Google Gemini 處理。
+      請勿輸入他人個資。模型基於有限官方樣本訓練，信心分數僅供參考、非法律判定。
+    </p>
   </div>
 
   <div v-if="result" class="card">
@@ -83,4 +87,5 @@ async function run() {
 .sims { list-style: none; padding: 0; margin: .4rem 0 0; }
 .sims li { padding: .55rem 0; border-top: 1px solid var(--line); font-size: .95rem; }
 .tag { display: inline-block; background: #eef2ff; color: #3147b8; border-radius: 6px; padding: .1rem .5rem; margin-right: .5rem; font-size: .8rem; }
+.disclosure { margin-top: 1rem; font-size: .8rem; color: var(--muted); background: #f7f9ff; border-left: 3px solid var(--warn); padding: .55rem .75rem; border-radius: 0 6px 6px 0; line-height: 1.6; }
 </style>

@@ -70,10 +70,11 @@ def train() -> None:
         ]
     )
     clf.fit(texts, labels)
-    acc = clf.score(texts, labels)
-    print(f"訓練集準確率：{acc:.2%}（樣本少，僅供 demo；接真實資料後會更有意義）")
     joblib.dump(clf, MODEL_PATH)
     print(f"模型已存：{MODEL_PATH}")
+    # ⚠️ 不在此印『訓練集準確率』——小資料會接近 100% 但毫無意義。
+    #    真實表現請跑 `python -m model.evaluate`（held-out 測試集的 Precision/Recall/F1）。
+    print("→ 評估真實表現請執行：python -m model.evaluate")
 
 
 if __name__ == "__main__":

@@ -17,6 +17,21 @@ from .model import predict_proba
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+# 月度呼叫上限（成本護欄，顧問建議）：超過就降級不打 Gemini
+GEMINI_MONTHLY_CAP = int(os.getenv("GEMINI_MONTHLY_CAP", "1000"))
+_gem_calls = {"month": "", "count": 0}
+
+
+def _gemini_quota_ok() -> bool:
+    import datetime
+
+    m = datetime.date.today().strftime("%Y-%m")
+    if _gem_calls["month"] != m:
+        _gem_calls["month"], _gem_calls["count"] = m, 0
+    if _gem_calls["count"] >= GEMINI_MONTHLY_CAP:
+        return False
+    _gem_calls["count"] += 1
+    return True
 
 # 規則 fallback 用的高風險訊號詞
 _RED_FLAGS = [
@@ -123,27 +138,32 @@ def detect(text: str) -> dict:
     hits = rag_search(text)
     rule_s, rule_reasons = _rule_score(text, hits)
     model_p = predict_proba(text)                                  # 自訓模型 P(scam)
-    gem = _gemini_verdict(text, hits) if GEMINI_API_KEY else None   # Gemini 第二意見 + 理由
+    # Gemini 第二意見 + 理由（有 key 且未超月度上限才打，控制成本）
+    gem = _gemini_verdict(text, hits) if (GEMINI_API_KEY and _gemini_quota_ok()) else None
 
     if model_p is None and gem is None:
         # 都沒有 → 純規則 fallback
         result = _rule_verdict(text, hits)
     else:
-        # 加權合併：規則訊號永遠參與，避免小資料模型過度自信
-        parts: list[tuple[float, float]] = [(0.34, rule_s)]
+        # 模型為主訊號（held-out 已驗證 Recall 高、FPR 低）；規則只能「往上加分」不拖累；
+        # Gemini 在線時與當前分數對半融合（第二意見）。
         reasons = list(rule_reasons)
         engine = ["rule"]
         if model_p is not None:
-            parts.append((0.4, model_p))
+            conf = model_p
             reasons.append(f"自訓模型詐騙機率 {model_p:.0%}")
             engine.insert(0, "model")
+        else:
+            conf = rule_s
+        # 規則「強烈」命中（多個紅旗詞，rule_s>=0.5）時才往上加分，避免弱訊號誤推正常訊息
+        if rule_s >= 0.5:
+            conf = conf + 0.5 * rule_s * (1 - conf)
         if gem is not None:
-            parts.append((0.4, gem["confidence"]))
+            conf = 0.6 * conf + 0.4 * gem["confidence"]
             if gem.get("reasoning"):
                 reasons.append(gem["reasoning"].rstrip("。"))
             engine.insert(0, "gemini")
-        wsum = sum(w for w, _ in parts)
-        conf = round(sum(w * v for w, v in parts) / wsum, 2)
+        conf = round(min(1.0, conf), 2)
         if not reasons:
             reasons.append("未偵測到明顯詐騙訊號，但仍請保持警覺")
         result = {

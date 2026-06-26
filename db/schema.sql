@@ -5,14 +5,14 @@
 -- ── 1. 歷史詐騙統計（2021–2025）：給統計視覺化用，可 SQL 聚合 ──
 CREATE TABLE IF NOT EXISTS scam_reports (
     id          SERIAL PRIMARY KEY,
-    year        INT  NOT NULL,            -- 2021–2025
+    year        INT  NOT NULL,            -- 年度
     month       INT,                      -- 1–12，可為 NULL（只有年資料時）
-    category    TEXT NOT NULL,            -- 詐騙類型：假投資 / 假網拍 / 假交友 …
+    category    TEXT,                     -- 類型；'全部' 表年度總計
     channel     TEXT,                     -- 管道：簡訊 / 社群 / 電話 / 假網站 …
     region      TEXT,                     -- 地區（縣市），可 NULL
     case_count  INT  NOT NULL DEFAULT 0,  -- 案件數
-    loss_amount BIGINT DEFAULT 0,         -- 財損金額（新台幣元）
-    source      TEXT,                     -- 資料來源（出處連結/機關）
+    loss_amount BIGINT DEFAULT 0,         -- 財損金額（新台幣元）；未取得官方數字者為 0
+    source      TEXT,                     -- 資料來源（出處/機關）
     created_at  TIMESTAMPTZ DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_scam_reports_year ON scam_reports(year);
@@ -44,7 +44,9 @@ CREATE TABLE IF NOT EXISTS qa_questions (
     created_at   TIMESTAMPTZ DEFAULT now()
 );
 
--- ── 4. 偵測紀錄（選用：記錄每次偵測請求，可做後續分析）──
+-- ── 4. 偵測紀錄（選用，預設不啟用）──
+-- ⚠️ PDPA/個資：input_text 可能含第三人個資。預設不寫入；若要啟用紀錄，
+--    務必先過 crawler.base.scrub_pii() 去識別化，或只存 verdict/confidence 與雜湊，並於前端告知。
 CREATE TABLE IF NOT EXISTS detections (
     id          SERIAL PRIMARY KEY,
     input_type  TEXT NOT NULL,            -- 'text' | 'url'

@@ -71,10 +71,16 @@ def get_scam_examples() -> list[dict]:
         return [dict(r) for r in rows]
 
 
-def get_stats(year_from: int = 2021, year_to: int = 2025) -> dict:
+def get_stats(year_from: int = 2020, year_to: int = 2025) -> dict:
+    """回傳：
+    - by_year：官方年度詐騙統計（真實、帶出處）
+    - by_sample_type：我們實際收集的官方案例樣本之類型分布（真實，由 scam_examples 計算）
+    - note：資料口徑與限制說明（誠信揭露）
+    """
     eng = _engine()
     if eng is None:
         rows = [r for r in _fixtures()["scam_reports"] if year_from <= r["year"] <= year_to]
+        note = _fixtures().get("_scam_reports_note", "")
     else:
         from sqlalchemy import text
 
@@ -83,23 +89,36 @@ def get_stats(year_from: int = 2021, year_to: int = 2025) -> dict:
                 dict(r)
                 for r in c.execute(
                     text(
-                        "SELECT year, category, case_count, loss_amount FROM scam_reports "
-                        "WHERE year BETWEEN :a AND :b"
+                        "SELECT year, case_count, loss_amount, source FROM scam_reports "
+                        "WHERE year BETWEEN :a AND :b ORDER BY year"
                     ),
                     {"a": year_from, "b": year_to},
                 ).mappings()
             ]
+        note = "年度數字為刑事局/165打詐儀錶板公開統計；2024起新口徑，不宜逐年直接比較。"
 
-    by_year: dict[int, dict] = {}
-    by_cat: dict[str, dict] = {}
-    for r in rows:
-        y = by_year.setdefault(r["year"], {"year": r["year"], "case_count": 0, "loss_amount": 0})
-        y["case_count"] += r["case_count"]
-        y["loss_amount"] += r["loss_amount"]
-        c_ = by_cat.setdefault(r["category"], {"category": r["category"], "case_count": 0, "loss_amount": 0})
-        c_["case_count"] += r["case_count"]
-        c_["loss_amount"] += r["loss_amount"]
-    return {
-        "by_year": sorted(by_year.values(), key=lambda x: x["year"]),
-        "by_category": sorted(by_cat.values(), key=lambda x: -x["case_count"]),
-    }
+    by_year = sorted(
+        (
+            {
+                "year": r["year"],
+                "case_count": r["case_count"],
+                "loss_amount": r.get("loss_amount", 0),
+                "source": r.get("source", ""),
+            }
+            for r in rows
+        ),
+        key=lambda x: x["year"],
+    )
+
+    # 真實收集樣本的類型分布（只算標為 scam 且有 scam_type 的）
+    type_count: dict[str, int] = {}
+    for ex in get_scam_examples():
+        if ex.get("label") == "scam":
+            t = ex.get("scam_type") or "未分類"
+            type_count[t] = type_count.get(t, 0) + 1
+    by_sample_type = sorted(
+        ({"scam_type": k, "count": v} for k, v in type_count.items()),
+        key=lambda x: -x["count"],
+    )
+
+    return {"by_year": by_year, "by_sample_type": by_sample_type, "note": note}

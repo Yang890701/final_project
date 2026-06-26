@@ -23,6 +23,10 @@ services:
           property: connectionString
       - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MONTHLY_CAP
+        value: "1000"
+      - key: ALLOWED_ORIGINS         # 上線後填前端網址，鎖 CORS（勿用 *）
+        sync: false
 
   # --- Node.js：模擬遊戲路由 / 問答對 ---
   - type: web
