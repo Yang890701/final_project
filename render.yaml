@@ -49,3 +49,13 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    envVars:
+      # 兩個後端部署好後，把它們的網址(https://xxx.onrender.com)填進這兩個，再 Manual Deploy 前端一次
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_NODE_URL
+        sync: false
+    routes:
+      - type: rewrite        # SPA fallback（雖用 hash 路由，保險起見）
+        source: /*
+        destination: /index.html
