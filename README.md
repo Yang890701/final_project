@@ -22,10 +22,13 @@
 |---|---|---|
 | `frontend/` | Vue.js 多頁前端 | Vue 3 + Vite |
 | `backend-node/` | 模擬遊戲路由 + 問答對 API | Node.js + Express |
-| `backend-api/` | 偵測模型 / 統計 / Gemini | Python + FastAPI |
-| `crawler/` | 動態網頁爬蟲收集詐騙資料 | Python + Selenium/Playwright |
+| `backend-api/` | 偵測（自訓模型 + Gemini）/ 統計 | Python + FastAPI + scikit-learn |
+| `backend-api/model/` | 自訓詐騙分類器（TF-IDF + LogReg） | scikit-learn |
+| `crawler/` | 爬蟲 + 165 官方開放資料載入 | Python + Selenium/Playwright |
 | `analysis/` | 資料分析與視覺化 | Python (pandas/matplotlib) |
-| `docs/` | 專題計畫書、架構圖、繳交物 | — |
+| `edge-jetson/` | Jetson 攝像頭 → OCR → 偵測（加分） | Python + OpenCV/pytesseract |
+| `deploy/` `docs/DEPLOY.md` | render + AWS 部署設定/指南 | Docker / render.yaml |
+| `docs/` | 專題計畫書、架構圖、API 契約、繳交物 | — |
 
 ## 功能
 

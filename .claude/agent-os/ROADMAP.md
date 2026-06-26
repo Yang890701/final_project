@@ -26,9 +26,9 @@
 | 2 | 後端：偵測模型 + API + Gemini + 統計 | ✅ 程式完成（Gemini key 待填） | OQ-1 定案 + Phase 1 |
 | 3 | 前端：Vue.js MPA（偵測 / 遊戲 / 統計） | ✅ 程式完成（vite build 通過） | Phase 2 API 可用 |
 | 4 | 資料分析與視覺化 | ✅ 腳本完成（待真實資料 + pandas 產圖） | Phase 1 資料就緒 |
-| 5 | 部署（render） | 🟡 render.yaml 就緒，待使用者部署 | Phase 2+3 可跑 |
-| 6 | 加分：Nvidia Jetson Orin Nano + 攝像頭 | ⏳ Pending（OQ-3） | 主功能完成且行有餘力 |
-| 7 | 繳交：1080p 錄影 + 心得 + 收尾 | ⏳ Pending | 全功能上線 |
+| 5 | 部署（render + AWS 雙軌） | 🟡 render.yaml + AWS Dockerfile/指南就緒，待使用者執行 | Phase 2+3 可跑 |
+| 6 | 加分：Jetson + 攝像頭 | ✅ 程式完成（軟體流程驗證；待硬體實跑） | — |
+| 7 | 繳交：1080p 錄影 + 心得 + 收尾 | ⏳ Pending（需使用者） | 全功能上線 |
 
 ---
 
