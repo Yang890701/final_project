@@ -29,7 +29,8 @@ def _fetch_official() -> tuple:
             body = (rec.get("發佈內容") or "").strip()
             d = (rec.get("發佈時間") or "").strip()[:10]
             if title:
-                items.append({"date": d, "title": title, "summary": body[:120]})
+                items.append({"date": d, "title": title, "summary": body[:200],
+                              "link": "https://165.npa.gov.tw/"})
         items.sort(key=lambda x: x["date"], reverse=True)
         return (tuple(json.dumps(i) for i in items), "165 反詐騙闢謠專區（官方即時）")
     except Exception as e:  # noqa: BLE001

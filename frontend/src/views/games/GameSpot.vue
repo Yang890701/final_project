@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { spotItems } from "../../data/games.js";
+import { recordGame } from "../../composables/useProgress.js";
 
 const i = ref(0); const found = ref(new Set()); const done = ref(false); const score = ref(0);
 const item = computed(() => spotItems[i.value]);
@@ -15,7 +16,7 @@ function reveal() {
   if (found.value.size === item.value.flags.length) score.value++;
 }
 function next() {
-  if (i.value + 1 >= spotItems.length) { i.value = -2; return; } // -2 = finished sentinel
+  if (i.value + 1 >= spotItems.length) { i.value = -2; recordGame("spot", score.value, spotItems.length); return; }
   i.value++; found.value = new Set(); done.value = false;
 }
 function restart() { i.value = 0; found.value = new Set(); done.value = false; score.value = 0; }
@@ -30,7 +31,7 @@ function restart() { i.value = 0; found.value = new Set(); done.value = false; s
     <p class="muted">第 {{ i + 1 }} / {{ spotItems.length }} 關 — 點出這則訊息裡<strong>可疑的字句</strong>：</p>
     <div class="msg">
       <template v-for="(p, k) in parts" :key="k">
-        <span v-if="p.flag" class="tok" :class="{ got: found.has(p.seg), bad: done && true }" @click="tap(p.seg, p.flag)">{{ p.seg }}</span>
+        <span v-if="p.flag" class="tok" :class="{ got: found.has(p.seg), bad: done && !found.has(p.seg) }" @click="tap(p.seg, p.flag)">{{ p.seg }}</span>
         <span v-else>{{ p.seg }}</span>
       </template>
     </div>

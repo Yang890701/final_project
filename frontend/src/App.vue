@@ -39,9 +39,31 @@ const tabs = [
 
     <main class="content"><RouterView /></main>
 
-    <footer class="footer">
-      <p>安心盾 · 反詐夥伴 — 偵測、學習、求助，陪你遠離詐騙</p>
-      <p class="fnote">資料來源：內政部警政署 165 反詐騙開放資料　·　遇詐請撥 165</p>
+    <footer class="footer full-bleed">
+      <div class="bleed-inner fcols">
+        <div class="fbrand">
+          <div class="title" style="color:var(--brand-deep)">安心盾 · 防詐夥伴</div>
+          <p class="muted">偵測、學習、求助，陪你遠離詐騙。</p>
+        </div>
+        <div>
+          <h4>功能</h4>
+          <RouterLink to="/detect">偵測中心</RouterLink>
+          <RouterLink to="/game">防詐練習</RouterLink>
+          <RouterLink to="/intel">詐騙情報</RouterLink>
+        </div>
+        <div>
+          <h4>求助管道</h4>
+          <a href="tel:165">165 反詐騙專線</a>
+          <a href="tel:110">110 報案</a>
+          <RouterLink to="/help">我被騙了怎麼辦</RouterLink>
+        </div>
+        <div>
+          <h4>官方資源</h4>
+          <a href="https://165.npa.gov.tw/" target="_blank" rel="noopener">165 全民防騙網 ↗</a>
+          <a href="https://165dashboard.tw/" target="_blank" rel="noopener">165 打詐儀錶板 ↗</a>
+        </div>
+      </div>
+      <div class="bleed-inner fcopy">資料來源：內政部警政署 165 反詐騙開放資料　·　本平台為學生專題，僅供參考，遇詐請撥 165 查證。</div>
     </footer>
   </div>
 </template>
@@ -64,7 +86,14 @@ const tabs = [
   --ok: #2f8f76;
   --radius: 18px;
   --shadow: 0 10px 30px rgba(140,90,50,.10);
+  /* 寬度軸線（rubric #3：填滿畫面、三層對齊同軸）*/
+  --maxw: 1200px;
+  --maxw-read: 720px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
 }
+/* 全幅 band：背景滿版、內容置中 */
+.full-bleed { width: 100vw; margin-inline: calc(50% - 50vw); }
+.bleed-inner { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
@@ -78,23 +107,30 @@ body {
 
 /* 頂部：暖橘，非藍漸層 */
 .topbar { background: linear-gradient(120deg, #e8743b, #f2994a); color: #fff; padding: 1.05rem 1.25rem; }
-.brand { display: flex; align-items: center; gap: .8rem; max-width: 960px; margin: 0 auto; width: 100%; color: #fff; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: .8rem; max-width: var(--maxw); margin: 0 auto; width: 100%; color: #fff; text-decoration: none; }
 .title { font-size: 1.4rem; font-weight: 800; letter-spacing: .5px; }
 .title .tw { font-size: .9rem; font-weight: 600; opacity: .9; }
 .subtitle { font-size: .9rem; opacity: .92; }
 
 /* 頁簽：米白底、暖橘選中，icon+字 */
 .tabs { background: var(--cream-2); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
-.tabs-inner { max-width: 960px; margin: 0 auto; display: flex; gap: .2rem; flex-wrap: wrap; padding: .35rem .5rem; }
+.tabs-inner { max-width: var(--maxw); margin: 0 auto; display: flex; gap: .2rem; flex-wrap: wrap; padding: .35rem var(--gutter); }
 .tab { display: inline-flex; align-items: center; gap: .35rem; color: var(--ink-soft); text-decoration: none;
   padding: .5rem .75rem; border-radius: 999px; font-weight: 600; font-size: .95rem; transition: all .15s; white-space: nowrap; }
 .tab:hover { background: var(--brand-soft); color: var(--brand-deep); }
 .tab.on { background: var(--brand); color: #fff; }
 
-.content { flex: 1; width: 100%; max-width: 820px; margin: 1.6rem auto; padding: 0 1rem; }
-.footer { text-align: center; color: var(--ink-soft); padding: 2rem 1rem; font-size: .85rem; background: var(--cream-2); border-top: 1px solid var(--line); }
-.footer p { margin: .2rem 0; }
-.fnote { font-size: .78rem; opacity: .8; }
+.content { flex: 1; width: 100%; max-width: var(--maxw); margin: 1.8rem auto; padding-inline: var(--gutter); }
+/* 長文閱讀區塊可在頁內自行收窄 */
+.readable { max-width: var(--maxw-read); }
+.footer { color: var(--ink-soft); padding: 2.4rem 0 1.4rem; font-size: .9rem; background: var(--cream-2); border-top: 1px solid var(--line); margin-top: 1.5rem; }
+.fcols { display: grid; grid-template-columns: 1fr; gap: 1.4rem; }
+@media (min-width: 720px) { .fcols { grid-template-columns: 1.6fr 1fr 1fr 1fr; } }
+.footer h4 { margin: 0 0 .5rem; color: var(--ink); font-size: .95rem; }
+.footer a { display: block; color: var(--ink-soft); text-decoration: none; padding: .15rem 0; }
+.footer a:hover { color: var(--brand-deep); }
+.fbrand .title { font-size: 1.15rem; font-weight: 800; }
+.fcopy { font-size: .78rem; opacity: .85; margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 
 /* 共用元件 */
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem 1.5rem; box-shadow: var(--shadow); margin-bottom: 1.2rem; }

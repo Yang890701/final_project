@@ -2,6 +2,7 @@
 import { useRouter } from "vue-router";
 import Icon from "../components/Icon.vue";
 import HeroArt from "../components/HeroArt.vue";
+import SourceCard from "../components/SourceCard.vue";
 const router = useRouter();
 
 const features = [
@@ -13,14 +14,15 @@ const features = [
   { icon: "heart", title: "關於我們", desc: "我們為什麼做、資料怎麼來。", to: "/about" },
 ];
 const govs = [
-  { emoji: "📞", t: "165 反詐騙專線", s: "諮詢・檢舉・查證，24 小時", href: "https://165.npa.gov.tw/" },
-  { emoji: "📊", t: "165 打詐儀錶板", s: "官方即時詐騙數據", href: "https://165dashboard.tw/" },
+  { icon: "phone", label: "165 反詐騙專線", sub: "諮詢・檢舉・查證，24 小時", href: "https://165.npa.gov.tw/" },
+  { icon: "intel", label: "165 打詐儀錶板", sub: "官方即時詐騙數據", href: "https://165dashboard.tw/" },
 ];
 </script>
 
 <template>
-  <!-- Hero：左文右圖，暖色，同理開場 -->
-  <section class="hero">
+  <!-- Hero：全幅暖色 band，左文右圖 -->
+  <section class="full-bleed hero-band">
+   <div class="bleed-inner hero">
     <div class="hero-text">
       <p class="eyebrow">每天 336 件詐騙，一年捲走超過 500 億</p>
       <h1>在按下匯款前，<br />先讓我陪你看一眼。</h1>
@@ -32,6 +34,7 @@ const govs = [
       </div>
     </div>
     <div class="hero-img"><HeroArt /></div>
+   </div>
   </section>
 
   <!-- 功能（不同節奏：兩欄卡片 + icon，非罐頭一排）-->
@@ -49,25 +52,23 @@ const govs = [
   <section class="card govs">
     <h3>遇到狀況，這些官方管道能幫你</h3>
     <div class="gov-row">
-      <a v-for="g in govs" :key="g.href" class="gov-card" :href="g.href" target="_blank" rel="noopener">
-        <span class="g-emoji">{{ g.emoji }}</span>
-        <span><span class="g-t">{{ g.t }}</span><br /><span class="g-s">{{ g.s }} ↗</span></span>
-      </a>
+      <SourceCard v-for="g in govs" :key="g.href" v-bind="g" />
     </div>
   </section>
 </template>
 
 <style scoped>
-.hero { display: flex; align-items: center; gap: 1.5rem; background: linear-gradient(135deg, #fffaf3, #fde9dc); border: 1px solid var(--line); border-radius: 22px; padding: 1.8rem; margin-bottom: 1.4rem; box-shadow: var(--shadow); }
+.hero-band { background: linear-gradient(135deg, #fffaf3, #fde9dc); border-block: 1px solid var(--line); margin-bottom: 1.6rem; }
+.hero { display: flex; align-items: center; gap: 2.5rem; padding-block: clamp(1.8rem, 5vw, 3.5rem); }
+.hero-text { flex: 1; }
 .eyebrow { color: var(--danger); font-weight: 700; font-size: .92rem; margin: 0 0 .4rem; }
-.hero h1 { font-size: 1.9rem; line-height: 1.4; margin: 0 0 .6rem; color: var(--ink); }
+.hero h1 { font-size: clamp(1.7rem, 3.2vw, 2.6rem); line-height: 1.35; margin: 0 0 .7rem; color: var(--ink); }
 .lead { color: var(--ink-soft); margin: 0 0 1.2rem; }
 .cta { display: flex; gap: .7rem; flex-wrap: wrap; }
 .hero-img { flex-shrink: 0; }
 @media (max-width: 640px) { .hero { flex-direction: column-reverse; text-align: center; } .cta { justify-content: center; } .hero h1 { font-size: 1.55rem; } }
 
-.feat-grid { display: grid; grid-template-columns: 1fr; gap: .8rem; margin-bottom: 1.4rem; }
-@media (min-width: 640px) { .feat-grid { grid-template-columns: 1fr 1fr; } }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
 .feat { display: flex; align-items: flex-start; gap: .9rem; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 1rem 1.15rem; cursor: pointer; transition: transform .14s, box-shadow .14s, border-color .14s; }
 .feat:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #f4cdb6; }
 .fic { flex-shrink: 0; width: 44px; height: 44px; border-radius: 13px; background: var(--brand-soft); color: var(--brand-deep); display: grid; place-items: center; }
