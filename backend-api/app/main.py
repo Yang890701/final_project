@@ -19,6 +19,7 @@ from .urlcheck import check_url, blocklist_size
 from .community import check_phone, add_report
 from .assistant import chat
 from .alerts import get_alerts
+from .init_db import init_db
 
 # 允許的前端來源（逗號分隔）；預設只開本機開發。上線時設成你的前端網域。
 ALLOWED_ORIGINS = [
@@ -35,6 +36,11 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+def _startup():
+    init_db()
+
 
 _hits: dict[str, deque] = {}
 
