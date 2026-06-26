@@ -21,13 +21,13 @@
 
 | Phase | Description | Status | Trigger |
 |---|---|---|---|
-| 0 | 立案 / 環境與決策 | 🟡 In progress（OQ-1/OQ-2 已定，建骨架中） | — |
-| 1 | 資料層：爬蟲 + PostgreSQL schema | ⏳ Pending | Phase 0 完成 |
-| 2 | 後端：偵測模型 + API + Gemini + 統計 | ⏳ Pending | OQ-1 定案 + Phase 1 |
-| 3 | 前端：Vue.js MPA（偵測 / 遊戲 / 統計 / Gemini） | ⏳ Pending | Phase 2 API 可用 |
-| 4 | 資料分析與視覺化 | ⏳ Pending | Phase 1 資料就緒 |
-| 5 | 部署（render 或 AWS，見 OQ-2） | ⏳ Pending | Phase 2+3 可跑 |
-| 6 | 加分：Nvidia Jetson Orin Nano + 攝像頭 | ⏳ Pending | 主功能完成且行有餘力 |
+| 0 | 立案 / 環境與決策 | ✅ Done | — |
+| 1 | 資料層：爬蟲 + PostgreSQL schema | ✅ 程式完成（真實爬蟲來源待指定） | Phase 0 完成 |
+| 2 | 後端：偵測模型 + API + Gemini + 統計 | ✅ 程式完成（Gemini key 待填） | OQ-1 定案 + Phase 1 |
+| 3 | 前端：Vue.js MPA（偵測 / 遊戲 / 統計） | ✅ 程式完成（vite build 通過） | Phase 2 API 可用 |
+| 4 | 資料分析與視覺化 | ✅ 腳本完成（待真實資料 + pandas 產圖） | Phase 1 資料就緒 |
+| 5 | 部署（render） | 🟡 render.yaml 就緒，待使用者部署 | Phase 2+3 可跑 |
+| 6 | 加分：Nvidia Jetson Orin Nano + 攝像頭 | ⏳ Pending（OQ-3） | 主功能完成且行有餘力 |
 | 7 | 繳交：1080p 錄影 + 心得 + 收尾 | ⏳ Pending | 全功能上線 |
 
 ---

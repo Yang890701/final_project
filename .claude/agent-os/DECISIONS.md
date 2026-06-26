@@ -26,3 +26,11 @@
 - **Decision**: 前端、兩個後端、PostgreSQL 全部部署於 **render**；資料庫用 render 的 PostgreSQL。
 - **Rationale**: 直接滿足作業 #2/#4 評分要求、免費額度足夠專題、設定簡單。計畫書的 AWS 架構封存於 ROADMAP「Parked Ideas」，未來作品集落地再啟用。
 - **Consequence**: Phase 1 的 DB 連線指向 render PostgreSQL；Phase 5 以 render（Static Site + 2× Web Service + PostgreSQL）部署；用 `render.yaml` 管理服務。
+
+---
+
+## D004 — 詐騙偵測採「Gemini 一發 + 輕量 RAG」，不 fine-tune（2026-06-26，workflow-decomposer 建議）
+
+- **Decision**: 偵測核心用 Gemini 單次 prompt 判定（是否詐騙 + 信心 + 理由）；以 PostgreSQL 歷史案例做 RAG grounding。遊戲批改與統計走 SQL/查表（非 LLM）。不微調、不 multi-agent。
+- **Rationale**: workflow-decomposer 拆解結論——詐騙話術易變、無標註訓練集、專題情境 → 微調是最脆最貴的一層；一發是 MVP，RAG 提升可解釋性與信心校準；deterministic 任務走規則零幻覺。
+- **Consequence**: schema 必須含「話術原文/特徵文本」欄位供 RAG 向量化（不能只存統計數字）；先做純一發原型，用失敗案例決定是否加 RAG；偵測端點留 Gemini-key 環境變數 + 無 key 時的規則化 fallback，確保本機可跑。

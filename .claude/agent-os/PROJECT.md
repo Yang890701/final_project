@@ -9,10 +9,10 @@ A web platform that detects scams (model + Google Gemini), teaches users via sim
 ## Wake Summary (always-injected)
 
 - **Project:** 反詐平台 — 偵測詐騙 + 模擬遊戲教學 + 詐騙統計視覺化的網站（期末專題）。
-- **Phase:** Phase 0 — 立案 / 環境與決策（架構已定，建骨架中）。
-- **Next action:** 建 GitHub repo + monorepo 骨架（`frontend/ backend-node/ backend-api/ crawler/ analysis/ docs/`）+ 成員分工表。
-- **Blocker:** 無（OQ-1→Node+FastAPI、OQ-2→render 皆已定，見 D002/D003）。殘留：建議向老師確認非 Flask 是否影響評分。
-- **Stack:** Vue 前端 + Node.js（遊戲路由）+ FastAPI（模型/Gemini/統計）+ PostgreSQL，全部部署 render。
+- **Phase:** Phase 1–4 程式完成並驗證；剩 Phase 5（部署）/6（Jetson）/7（繳交）需使用者資源。
+- **Next action:** 使用者提供 render DB 連線字串 + Gemini key + 指定爬蟲來源 → 接真實資料並部署；否則整套已可用 fixtures + 規則 fallback 在本機跑。
+- **Blocker:** 外部依賴（render 帳號 / Gemini key / 爬蟲來源 / Jetson 硬體）需使用者；程式本身無 blocker。
+- **Stack:** Vue 前端 + Node.js（遊戲）+ FastAPI（偵測/統計/Gemini）+ PostgreSQL，部署 render。
 - **On-demand (read only when the task needs it):** `ROADMAP.md` (plan + anti-drift) · `DECISIONS.md` · `OPEN_QUESTIONS.md` · full `PROJECT.md` · latest `SESSION_LOG` · `memory/brain-routing-log.md`.
 <!-- WAKE-SUMMARY:END -->
 
@@ -24,10 +24,10 @@ A web platform that detects scams (model + Google Gemini), teaches users via sim
 
 | Field | Value |
 |---|---|
-| Session | 2026-06-26 — 立案 |
-| Completed | 接上 agent-os 引擎；讀入計畫書 + 作業圖；建立 4 份立案文件；定案 OQ-1（D002 Node+FastAPI）、OQ-2（D003 render） |
-| Next action | 建 GitHub repo + monorepo 骨架 + 分工表 |
-| Blocker | 無（殘留：向老師確認非 Flask） |
+| Session | 2026-06-26 — 立案 + 全棧實作 |
+| Completed | Phase 0–4：資料層（schema/seed/fixtures）、FastAPI（detect+stats，HTTP 驗證）、Express（遊戲，HTTP 驗證）、Vue 前端（vite build 通過）、爬蟲框架（demo+PII 驗證）、分析腳本。全部走 fixtures/規則 fallback 可零基礎設施跑。決策 D004（偵測=Gemini一發+RAG）。 |
+| Next action | 使用者提供 render DB / Gemini key / 爬蟲來源後接真實資料 + 部署（Phase 5） |
+| Blocker | 僅外部資源（render/Gemini/來源/Jetson）；程式無 blocker |
 
 ## How To Resume This Project
 

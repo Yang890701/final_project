@@ -1,0 +1,49 @@
+{
+  "_note": "無 DATABASE_URL 時後端的 fallback 資料，內容對應 seed.sql，供零基礎設施 demo。",
+  "scam_examples": [
+    {"label": "scam", "scam_type": "假投資", "content": "老師帶單穩賺不賠！加入VIP群組，提供內線飆股，三天獲利30%，名額有限速加LINE。"},
+    {"label": "scam", "scam_type": "假投資", "content": "您好，我是XX投顧分析師，目前有一檔即將漲停的標的，現在進場明天就能解套，先匯款到指定帳戶開戶。"},
+    {"label": "scam", "scam_type": "解除分期付款", "content": "這裡是客服中心，您先前購物因系統設定錯誤被設成分期付款，請依語音操作ATM解除，否則每月扣款。"},
+    {"label": "scam", "scam_type": "假冒公務機關", "content": "這裡是地檢署，您的帳戶涉及洗錢案件，需將存款匯入安全帳戶配合調查，否則將發布通緝。"},
+    {"label": "scam", "scam_type": "假網拍", "content": "限時特賣！iPhone全新只要3000元，先付款後出貨，請私訊匯款，數量不多要買要快。"},
+    {"label": "scam", "scam_type": "假交友", "content": "親愛的，我在國外工作很想你，現在海關扣留我的包裹需要一筆手續費，你能先幫我付嗎？我回國加倍還你。"},
+    {"label": "scam", "scam_type": "釣魚簡訊", "content": "您的包裹地址有誤無法配送，請點選連結更新資料 http://reurl-fake.example/track 並登入。"},
+    {"label": "legit", "scam_type": null, "content": "您好，這是您本月的電子帳單通知，可登入官方App查詢明細，本通知不會要求您提供密碼或匯款。"},
+    {"label": "legit", "scam_type": null, "content": "您的訂單已出貨，預計明日送達，物流追蹤請至官網訂單查詢頁，如有問題請撥客服專線。"},
+    {"label": "legit", "scam_type": null, "content": "銀行提醒：請勿聽信任何要求操作ATM或匯款至「安全帳戶」的來電，那是詐騙。"}
+  ],
+  "qa_questions": [
+    {"id": 1, "scam_type": "假投資", "difficulty": 1, "prompt": "收到訊息：「老師帶單保證獲利30%，加LINE進VIP群」，你該怎麼做？", "options": ["跟著加入，賺一波", "封鎖並檢舉，天下沒有穩賺不賠", "先匯小額測試看看"], "correct_idx": 1, "explanation": "「保證獲利」「穩賺不賠」是投資詐騙最典型話術，合法投資必有風險，遇到請封鎖檢舉。"},
+    {"id": 2, "scam_type": "解除分期付款", "difficulty": 1, "prompt": "自稱客服說你被誤設分期，要你到ATM操作解除，正確反應是？", "options": ["照做以免被扣款", "掛斷，撥打官方客服或165查證", "提供信用卡號給對方處理"], "correct_idx": 1, "explanation": "ATM 只能匯款不能「解除分期」，要求操作ATM即為詐騙，請撥165或官方專線查證。"},
+    {"id": 3, "scam_type": "假冒公務機關", "difficulty": 2, "prompt": "有人自稱檢警說你涉案，要你把錢匯到「安全帳戶」，這是？", "options": ["真的司法程序，趕快配合", "詐騙，司法機關不會要你匯款到安全帳戶", "先匯一部分表示清白"], "correct_idx": 1, "explanation": "司法機關不會以電話要求匯款或設「安全帳戶」，這是假冒公務機關詐騙。"},
+    {"id": 4, "scam_type": "假網拍", "difficulty": 1, "prompt": "看到「全新iPhone只賣3000元，先匯款後出貨」的貼文，應該？", "options": ["立刻搶購", "提高警覺，價格遠低於行情且要先匯款多為詐騙", "私訊殺價"], "correct_idx": 1, "explanation": "遠低於市價＋要求先匯款＋私下交易是假網拍三大特徵，建議用有保障的平台交易。"},
+    {"id": 5, "scam_type": "釣魚簡訊", "difficulty": 2, "prompt": "收到「包裹地址錯誤，點連結更新」的簡訊，連結是陌生短網址，該？", "options": ["點進去更新資料", "不點連結，直接到物流官網或App查詢", "回覆簡訊詢問"], "correct_idx": 1, "explanation": "物流不會用陌生短網址要你登入更新，這是釣魚簡訊，應自行至官方管道查詢。"}
+  ],
+  "scam_reports": [
+    {"year": 2021, "category": "假投資", "case_count": 8200, "loss_amount": 4200000000},
+    {"year": 2021, "category": "假網拍", "case_count": 6100, "loss_amount": 850000000},
+    {"year": 2021, "category": "假冒公務機關", "case_count": 3400, "loss_amount": 620000000},
+    {"year": 2021, "category": "解除分期付款", "case_count": 4500, "loss_amount": 510000000},
+    {"year": 2021, "category": "假交友", "case_count": 2900, "loss_amount": 780000000},
+    {"year": 2022, "category": "假投資", "case_count": 11200, "loss_amount": 5300000000},
+    {"year": 2022, "category": "假網拍", "case_count": 6800, "loss_amount": 910000000},
+    {"year": 2022, "category": "假冒公務機關", "case_count": 3100, "loss_amount": 580000000},
+    {"year": 2022, "category": "解除分期付款", "case_count": 3900, "loss_amount": 470000000},
+    {"year": 2022, "category": "假交友", "case_count": 3600, "loss_amount": 990000000},
+    {"year": 2023, "category": "假投資", "case_count": 14800, "loss_amount": 6900000000},
+    {"year": 2023, "category": "假網拍", "case_count": 7400, "loss_amount": 1050000000},
+    {"year": 2023, "category": "假冒公務機關", "case_count": 2800, "loss_amount": 540000000},
+    {"year": 2023, "category": "解除分期付款", "case_count": 3300, "loss_amount": 420000000},
+    {"year": 2023, "category": "假交友", "case_count": 4200, "loss_amount": 1250000000},
+    {"year": 2024, "category": "假投資", "case_count": 16500, "loss_amount": 8100000000},
+    {"year": 2024, "category": "假網拍", "case_count": 7900, "loss_amount": 1180000000},
+    {"year": 2024, "category": "假冒公務機關", "case_count": 2500, "loss_amount": 500000000},
+    {"year": 2024, "category": "解除分期付款", "case_count": 2900, "loss_amount": 380000000},
+    {"year": 2024, "category": "假交友", "case_count": 4800, "loss_amount": 1480000000},
+    {"year": 2025, "category": "假投資", "case_count": 17800, "loss_amount": 8800000000},
+    {"year": 2025, "category": "假網拍", "case_count": 8100, "loss_amount": 1230000000},
+    {"year": 2025, "category": "假冒公務機關", "case_count": 2300, "loss_amount": 470000000},
+    {"year": 2025, "category": "解除分期付款", "case_count": 2600, "loss_amount": 350000000},
+    {"year": 2025, "category": "假交友", "case_count": 5200, "loss_amount": 1620000000}
+  ]
+}

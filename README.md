@@ -34,6 +34,26 @@
 3. **詐騙統計** — 2021–2025 歷史資料視覺化。
 4. **資料收集** — 爬蟲收集詐騙案例入庫。
 
+## 本機快速啟動（不需 render / Gemini 金鑰即可整套跑）
+
+未設定 `DATABASE_URL` 時，後端自動 fallback 用 `db/fixtures.json`；未設定 `GEMINI_API_KEY` 時，偵測走規則 fallback。三個服務各開一個終端機：
+
+```bash
+# 1) FastAPI 後端（偵測 / 統計）
+cd backend-api && pip install -r requirements.txt
+uvicorn app.main:app --reload          # → http://localhost:8000
+
+# 2) Node 後端（模擬遊戲）
+cd backend-node && npm install
+node src/server.js                      # → http://localhost:3000
+
+# 3) Vue 前端
+cd frontend && npm install
+npm run dev                             # → http://localhost:5173
+```
+
+接真實資料時：用 `docker compose up -d db` 起本機 Postgres（或填 render 連線字串到各服務的 `.env`），再 `db/schema.sql` + `db/seed.sql`，並設 `GEMINI_API_KEY` 啟用 Gemini 偵測。
+
 ## 開發
 
 各子專案的啟動方式見各自的 `README.md`。本專案以 agent-os 管理（`.claude/agent-os/`）—— 規劃、決策、分工見該目錄。
