@@ -7,18 +7,28 @@ const loading = ref(false);
 const result = ref(null);
 const error = ref("");
 
-const verdictLabel = { scam: "⚠️ 疑似詐騙", legit: "✅ 看起來正常", uncertain: "❓ 無法確定" };
-const verdictColor = { scam: "#c0392b", legit: "#27ae60", uncertain: "#f39c12" };
+const examples = [
+  "老師帶單保證獲利30%，加LINE進VIP群",
+  "您的帳戶涉及洗錢，請將存款匯到安全帳戶配合調查",
+  "媽我晚點回家，晚餐不用等我",
+  "您的包裹地址有誤，請點 http://reurl-fake.xyz 更新資料",
+];
+
+const badge = {
+  scam: { label: "⚠️ 疑似詐騙", color: "var(--danger)", bg: "#fdecec" },
+  legit: { label: "✅ 看起來正常", color: "var(--ok)", bg: "#e9f7ef" },
+  uncertain: { label: "❓ 無法確定", color: "var(--warn)", bg: "#fff6e6" },
+};
+
+function useExample(e) { text.value = e; }
 
 async function run() {
   if (!text.value.trim()) return;
-  loading.value = true;
-  error.value = "";
-  result.value = null;
+  loading.value = true; error.value = ""; result.value = null;
   try {
     result.value = await detect(text.value);
   } catch (e) {
-    error.value = "偵測失敗：" + e.message;
+    error.value = "偵測失敗，請確認後端是否啟動：" + e.message;
   } finally {
     loading.value = false;
   }
@@ -27,27 +37,50 @@ async function run() {
 
 <template>
   <div class="card">
-    <h2>詐騙偵測</h2>
-    <p>貼上可疑的訊息或網址，讓 AI 幫你判斷。</p>
+    <h2>🔍 詐騙偵測</h2>
+    <p class="muted">把可疑的訊息或網址貼進來，AI 幫你判斷是不是詐騙，並說明理由。</p>
     <textarea v-model="text" placeholder="例如：老師帶單保證獲利30%，加LINE進VIP群…"></textarea>
-    <p><button :disabled="loading" @click="run">{{ loading ? "分析中…" : "開始偵測" }}</button></p>
-    <p v-if="error" style="color:#c0392b">{{ error }}</p>
+    <div style="margin:.6rem 0">
+      <span class="muted" style="font-size:.9rem">試試範例：</span><br />
+      <span v-for="e in examples" :key="e" class="chip" @click="useExample(e)">{{ e.slice(0, 16) }}…</span>
+    </div>
+    <button class="btn" :disabled="loading || !text.trim()" @click="run">
+      {{ loading ? "分析中…" : "開始偵測" }}
+    </button>
+    <p v-if="error" style="color:var(--danger);margin-top:.8rem">{{ error }}</p>
   </div>
 
   <div v-if="result" class="card">
-    <h3 :style="{ color: verdictColor[result.verdict] }">
-      {{ verdictLabel[result.verdict] || result.verdict }}
-      <small style="color:#888">（信心 {{ Math.round(result.confidence * 100) }}%）</small>
-    </h3>
+    <div class="verdict" :style="{ background: badge[result.verdict]?.bg }">
+      <span class="v-label" :style="{ color: badge[result.verdict]?.color }">
+        {{ badge[result.verdict]?.label || result.verdict }}
+      </span>
+      <span class="v-conf">風險信心 {{ Math.round(result.confidence * 100) }}%</span>
+    </div>
+    <div class="bar"><div class="bar-fill" :style="{ width: (result.confidence*100)+'%', background: badge[result.verdict]?.color }"></div></div>
+
+    <h3 style="margin-top:1.1rem">為什麼這樣判斷？</h3>
     <p>{{ result.reasoning }}</p>
-    <p style="font-size:.8rem;color:#888">判定引擎：{{ result.engine }}</p>
-    <div v-if="result.similar_examples?.length">
-      <h4>相似的歷史案例</h4>
-      <ul>
+    <p class="muted" style="font-size:.85rem">判定引擎：{{ result.engine }}</p>
+
+    <template v-if="result.similar_examples?.length">
+      <h3>資料庫中相似的歷史案例</h3>
+      <ul class="sims">
         <li v-for="(ex, i) in result.similar_examples" :key="i">
-          <strong>{{ ex.scam_type || "一般" }}</strong>（相似度 {{ ex.score }}）：{{ ex.content }}
+          <span class="tag">{{ ex.scam_type || "一般" }}</span>{{ ex.content.slice(0, 50) }}…
         </li>
       </ul>
-    </div>
+    </template>
   </div>
 </template>
+
+<style scoped>
+.verdict { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1.1rem; border-radius: 10px; }
+.v-label { font-size: 1.35rem; font-weight: 800; }
+.v-conf { color: var(--muted); font-weight: 700; }
+.bar { height: 10px; background: #eef0f5; border-radius: 999px; margin-top: .6rem; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; transition: width .4s; }
+.sims { list-style: none; padding: 0; margin: .4rem 0 0; }
+.sims li { padding: .55rem 0; border-top: 1px solid var(--line); font-size: .95rem; }
+.tag { display: inline-block; background: #eef2ff; color: #3147b8; border-radius: 6px; padding: .1rem .5rem; margin-right: .5rem; font-size: .8rem; }
+</style>
