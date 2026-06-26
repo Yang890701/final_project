@@ -13,7 +13,7 @@ onMounted(async () => {
 
 const maxYear = computed(() => stats.value?.by_year?.length ? Math.max(...stats.value.by_year.map(y => y.case_count)) : 1);
 const maxType = computed(() => stats.value?.by_sample_type?.length ? Math.max(...stats.value.by_sample_type.map(c => c.count)) : 1);
-const palette = ["#1e4fd6", "#d83a3a", "#e08a00", "#1f9d57", "#7c3aed", "#0891b2", "#db2777"];
+const palette = ["#e8743b", "#d2452f", "#e0982a", "#2f8f76", "#b5651d", "#c85a28", "#8a9b3a"];
 const fmt = (n) => n.toLocaleString();
 const toYi = (n) => n ? (n / 1e8).toFixed(0) + " 億" : "—";
 
@@ -63,6 +63,19 @@ const guide = [
     </div>
   </template>
 
+  <!-- 官方資源連結卡 -->
+  <div class="card">
+    <h3>想看更完整的官方數據與情報？</h3>
+    <div class="gov-row">
+      <a class="gov-card" href="https://165dashboard.tw/" target="_blank" rel="noopener">
+        <span class="g-emoji">📊</span><span><span class="g-t">165 打詐儀錶板</span><br /><span class="g-s">官方即時詐騙統計 ↗</span></span>
+      </a>
+      <a class="gov-card" href="https://165.npa.gov.tw/" target="_blank" rel="noopener">
+        <span class="g-emoji">🌐</span><span><span class="g-t">165 全民防騙網</span><br /><span class="g-s">最新手法與宣導 ↗</span></span>
+      </a>
+    </div>
+  </div>
+
   <!-- 手法圖鑑 -->
   <div class="card">
     <h2>📖 詐騙手法圖鑑</h2>
@@ -95,5 +108,7 @@ const guide = [
 .gitem { background: #f7f9ff; border: 1px solid var(--line); border-radius: 10px; padding: .8rem 1rem; }
 .gh { font-size: 1.1rem; margin-bottom: .3rem; }
 .gdef { color: var(--ok); font-size: .9rem; margin: .4rem 0 0; }
+.gov-row { display: grid; grid-template-columns: 1fr; gap: .7rem; }
+@media (min-width: 560px) { .gov-row { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .row { flex-wrap: wrap; } .rv { width: 100%; text-align: left; } }
 </style>

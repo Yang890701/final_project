@@ -17,9 +17,16 @@ const badge = {
 };
 function pct(r) { return Math.round((r.confidence ?? r.risk ?? 0) * 100); }
 
-// ── 訊息 ──
+// ── 訊息（分類真實範例，一鍵帶入）──
 const text = ref("");
-const examples = ["老師帶單保證獲利30%，加LINE進VIP群", "您的帳戶涉及洗錢，請匯到安全帳戶配合調查", "媽我晚點回家，晚餐不用等我"];
+const examples = [
+  { t: "假投資", v: "老師帶單保證獲利30%，加LINE進VIP群，名額有限速進場" },
+  { t: "假冒公務", v: "這裡是地檢署，您帳戶涉及洗錢案，請將存款匯入安全帳戶配合調查" },
+  { t: "解除分期", v: "您先前購物被誤設成12期分期，請依語音操作ATM解除，否則每月扣款" },
+  { t: "釣魚簡訊", v: "您的包裹地址有誤無法配送，請點 http://reurl-fake.xyz 更新收件資料" },
+  { t: "假交友", v: "親愛的我在國外執行任務，包裹被海關扣留，能先幫我付手續費嗎" },
+  { t: "正常訊息", v: "媽我晚點回家，晚餐不用等我" },
+];
 const tRes = ref(null); const tLoad = ref(false); const tErr = ref("");
 async function runText() {
   if (!text.value.trim()) return;
@@ -29,6 +36,12 @@ async function runText() {
 
 // ── 網址 ──
 const url = ref(""); const uRes = ref(null); const uLoad = ref(false); const uErr = ref("");
+const urlEx = [
+  { t: "官方黑名單", v: "bbhhshf.cc" },
+  { t: "仿冒品牌", v: "paypal-verify.top" },
+  { t: "IP 網址", v: "http://192.168.0.5/pay" },
+  { t: "正常網站", v: "https://www.google.com" },
+];
 async function runUrl() {
   if (!url.value.trim()) return;
   uLoad.value = true; uErr.value = ""; uRes.value = null;
@@ -37,6 +50,11 @@ async function runUrl() {
 
 // ── 電話 ──
 const phone = ref(""); const pRes = ref(null); const pLoad = ref(false); const pErr = ref(""); const reported = ref(false);
+const phoneEx = [
+  { t: "國際偽冒(+886)", v: "+886912345678" },
+  { t: "市話", v: "0277123456" },
+  { t: "一般手機", v: "0912345678" },
+];
 async function runPhone() {
   if (!phone.value.trim()) return;
   pLoad.value = true; pErr.value = ""; pRes.value = null; reported.value = false;
@@ -78,7 +96,9 @@ function ResultCard(r) { return r; } // placeholder for template clarity
     <div v-show="tab === 'text'">
       <p class="muted">貼上可疑訊息，AI（自訓模型 + Gemini）判斷是否詐騙並解釋理由。</p>
       <textarea v-model="text" placeholder="例如：老師帶單保證獲利30%，加LINE進VIP群…"></textarea>
-      <div class="ex"><span class="muted">範例：</span><span v-for="e in examples" :key="e" class="chip" @click="text = e">{{ e.slice(0,14) }}…</span></div>
+      <div class="ex"><span class="muted">點一個真實範例試試：</span><br />
+        <span v-for="e in examples" :key="e.t" class="chip" @click="text = e.v">{{ e.t }}</span>
+      </div>
       <button class="btn" :disabled="tLoad || !text.trim()" @click="runText">{{ tLoad ? "分析中…" : "開始偵測" }}</button>
       <p v-if="tErr" class="err">{{ tErr }}</p>
     </div>
@@ -87,6 +107,9 @@ function ResultCard(r) { return r; } // placeholder for template clarity
     <div v-show="tab === 'url'">
       <p class="muted">貼上網址，比對 165 官方涉詐網站清單 + 仿冒/可疑特徵分析。</p>
       <input v-model="url" class="inp" placeholder="例如：http://paypal-verify.top/login" />
+      <div class="ex"><span class="muted">點一個範例試試：</span><br />
+        <span v-for="e in urlEx" :key="e.t" class="chip" @click="url = e.v">{{ e.t }}</span>
+      </div>
       <button class="btn" :disabled="uLoad || !url.trim()" @click="runUrl">{{ uLoad ? "檢查中…" : "檢查網址" }}</button>
       <p v-if="uErr" class="err">{{ uErr }}</p>
     </div>
@@ -95,6 +118,9 @@ function ResultCard(r) { return r; } // placeholder for template clarity
     <div v-show="tab === 'phone'">
       <p class="muted">查號碼是否被社群回報為詐騙。⚠️ 官方電話開放資料已下架，本查詢為社群回報 + 風險提示。</p>
       <input v-model="phone" class="inp" placeholder="例如：+886912345678 或 0277123456" />
+      <div class="ex"><span class="muted">點一個範例試試：</span><br />
+        <span v-for="e in phoneEx" :key="e.t" class="chip" @click="phone = e.v">{{ e.t }}</span>
+      </div>
       <button class="btn" :disabled="pLoad || !phone.trim()" @click="runPhone">{{ pLoad ? "查詢中…" : "查詢號碼" }}</button>
       <p v-if="pErr" class="err">{{ pErr }}</p>
     </div>
