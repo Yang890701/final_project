@@ -13,9 +13,27 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 _FIXTURES = Path(__file__).resolve().parents[2] / "db" / "fixtures.json"
 
 
+_INGESTED = Path(__file__).resolve().parents[2] / "db" / "ingested.jsonl"
+
+
 @lru_cache(maxsize=1)
 def _fixtures() -> dict:
     return json.loads(_FIXTURES.read_text(encoding="utf-8"))
+
+
+def _ingested_examples() -> list[dict]:
+    """爬蟲收集的真實資料（無 DB 時的累積檔）。"""
+    if not _INGESTED.exists():
+        return []
+    out = []
+    for line in _INGESTED.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line:
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass
+    return out
 
 
 @lru_cache(maxsize=1)
@@ -45,7 +63,7 @@ def using_db() -> bool:
 def get_scam_examples() -> list[dict]:
     eng = _engine()
     if eng is None:
-        return _fixtures()["scam_examples"]
+        return _fixtures()["scam_examples"] + _ingested_examples()
     from sqlalchemy import text
 
     with eng.connect() as c:

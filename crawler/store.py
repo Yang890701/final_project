@@ -6,7 +6,8 @@ import os
 from pathlib import Path
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-OUT = Path(__file__).resolve().parent / "output"
+# 無 DB 時的真實資料累積檔；backend-api 的 data 層與 model 訓練都會合併讀取它
+INGESTED = Path(__file__).resolve().parents[1] / "db" / "ingested.jsonl"
 
 
 def save_examples(rows: list[dict]) -> int:
@@ -14,13 +15,24 @@ def save_examples(rows: list[dict]) -> int:
     if not rows:
         return 0
     if not DATABASE_URL:
-        OUT.mkdir(exist_ok=True)
-        f = OUT / "scam_examples.jsonl"
-        with f.open("a", encoding="utf-8") as fh:
+        # 以 content 去重後追加
+        seen = set()
+        if INGESTED.exists():
+            for line in INGESTED.open(encoding="utf-8"):
+                try:
+                    seen.add(json.loads(line)["content"])
+                except Exception:
+                    pass
+        added = 0
+        with INGESTED.open("a", encoding="utf-8") as fh:
             for r in rows:
+                if r["content"] in seen:
+                    continue
                 fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-        print(f"[store] no DB → appended {len(rows)} rows to {f}")
-        return len(rows)
+                seen.add(r["content"])
+                added += 1
+        print(f"[store] no DB → appended {added} new rows to {INGESTED}（去重後）")
+        return added
 
     from sqlalchemy import create_engine, text
 

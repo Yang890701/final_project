@@ -1,8 +1,11 @@
-"""詐騙偵測核心（D004：Gemini 一發 + RAG；無 key 走規則 fallback）。
+"""詐騙偵測核心（D006：自訓模型 + Gemini + RAG ensemble；逐層降級）。
 
 流程：
 1. RAG — 從 scam_examples 用關鍵詞重疊找最相似的歷史案例（baseline；可升級 pgvector）。
-2. 判定 — 有 GEMINI_API_KEY 走 Gemini 一發（附上 RAG 命中案例 grounding）；否則走規則化 fallback。
+2. 自訓模型 — TF-IDF + LogisticRegression 給 P(scam)（模型檔存在才有）。
+3. Gemini — 有 key 時給 verdict + 理由（RAG grounding）。
+4. ensemble — 合併模型機率與 Gemini 信心；都沒有則規則 fallback。
+engine 標示：model+gemini+rag / model+rag / gemini+rag / rule-fallback。
 """
 from __future__ import annotations
 
@@ -10,6 +13,7 @@ import os
 import re
 
 from .data import get_scam_examples
+from .model import predict_proba
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
@@ -45,21 +49,14 @@ def rag_search(text: str, k: int = 3) -> list[dict]:
     return scored[:k]
 
 
-def _rule_verdict(text: str, hits: list[dict]) -> dict:
+def _rule_score(text: str, hits: list[dict]) -> tuple[float, list[str]]:
+    """回傳 (規則風險分 0~1, 理由列表)。"""
     matched = [w for w in _RED_FLAGS if w.lower() in text.lower()]
     has_url = bool(_URL_RE.search(text))
-    # 最相似案例若是 scam 且分數夠高，加權
     top = hits[0] if hits else None
-    sim_scam = top and top["label"] == "scam" and top["score"] >= 0.12
+    sim_scam = bool(top and top["label"] == "scam" and top["score"] >= 0.12)
 
     score = min(1.0, 0.18 * len(matched) + (0.25 if has_url else 0) + (0.3 if sim_scam else 0))
-    if score >= 0.5:
-        verdict = "scam"
-    elif score >= 0.25:
-        verdict = "uncertain"
-    else:
-        verdict = "legit"
-
     reasons = []
     if matched:
         reasons.append(f"出現高風險詞：{'、'.join(matched[:6])}")
@@ -67,11 +64,15 @@ def _rule_verdict(text: str, hits: list[dict]) -> dict:
         reasons.append("含外部連結，留意釣魚風險")
     if sim_scam:
         reasons.append(f"與歷史「{top['scam_type']}」話術相似（{top['score']}）")
+    return score, reasons
+
+
+def _rule_verdict(text: str, hits: list[dict]) -> dict:
+    score, reasons = _rule_score(text, hits)
     if not reasons:
         reasons.append("未偵測到明顯詐騙訊號，但仍請保持警覺")
-
     return {
-        "verdict": verdict,
+        "verdict": _verdict_from_conf(score) if score >= 0.3 else "legit",
         "confidence": round(score, 2),
         "reasoning": "；".join(reasons) + "。",
         "engine": "rule-fallback",
@@ -110,11 +111,48 @@ def _gemini_verdict(text: str, hits: list[dict]) -> dict | None:
         return None
 
 
+def _verdict_from_conf(conf: float) -> str:
+    if conf >= 0.5:
+        return "scam"
+    if conf >= 0.3:
+        return "uncertain"
+    return "legit"
+
+
 def detect(text: str) -> dict:
     hits = rag_search(text)
-    result = _gemini_verdict(text, hits) if GEMINI_API_KEY else None
-    if result is None:
+    rule_s, rule_reasons = _rule_score(text, hits)
+    model_p = predict_proba(text)                                  # 自訓模型 P(scam)
+    gem = _gemini_verdict(text, hits) if GEMINI_API_KEY else None   # Gemini 第二意見 + 理由
+
+    if model_p is None and gem is None:
+        # 都沒有 → 純規則 fallback
         result = _rule_verdict(text, hits)
+    else:
+        # 加權合併：規則訊號永遠參與，避免小資料模型過度自信
+        parts: list[tuple[float, float]] = [(0.34, rule_s)]
+        reasons = list(rule_reasons)
+        engine = ["rule"]
+        if model_p is not None:
+            parts.append((0.4, model_p))
+            reasons.append(f"自訓模型詐騙機率 {model_p:.0%}")
+            engine.insert(0, "model")
+        if gem is not None:
+            parts.append((0.4, gem["confidence"]))
+            if gem.get("reasoning"):
+                reasons.append(gem["reasoning"].rstrip("。"))
+            engine.insert(0, "gemini")
+        wsum = sum(w for w, _ in parts)
+        conf = round(sum(w * v for w, v in parts) / wsum, 2)
+        if not reasons:
+            reasons.append("未偵測到明顯詐騙訊號，但仍請保持警覺")
+        result = {
+            "verdict": _verdict_from_conf(conf),
+            "confidence": conf,
+            "reasoning": "；".join(reasons) + "。",
+            "engine": "+".join(engine) + "+rag",
+        }
+
     result["similar_examples"] = [
         {"scam_type": h.get("scam_type"), "content": h["content"], "score": h["score"]}
         for h in hits

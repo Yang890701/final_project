@@ -17,6 +17,8 @@ from .store import save_examples
 def main() -> None:
     ap = argparse.ArgumentParser(description="反詐平台爬蟲")
     ap.add_argument("--demo", action="store_true", help="跑內建示範（不連外）")
+    ap.add_argument("--gov", action="store_true", help="抓警政署 165 開放資料（真實資料）")
+    ap.add_argument("--limit", type=int, help="最多抓幾筆（gov 模式）")
     ap.add_argument("--url", help="目標頁面 URL")
     ap.add_argument("--selector", help="每則案例的 CSS selector")
     ap.add_argument("--type", dest="scam_type", help="詐騙類型標註")
@@ -28,6 +30,14 @@ def main() -> None:
         print(f"[demo] parsed {len(rows)} rows（已去個資）：")
         for r in rows:
             print("  -", r["content"])
+        save_examples(rows)
+        return
+
+    if args.gov:
+        from .sources_gov import fetch_gov_debunk
+
+        rows = fetch_gov_debunk(limit=args.limit)
+        print(f"[gov] 抓到 {len(rows)} 筆 165 官方詐騙闢謠資料")
         save_examples(rows)
         return
 

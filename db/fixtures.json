@@ -10,7 +10,16 @@
     {"label": "scam", "scam_type": "釣魚簡訊", "content": "您的包裹地址有誤無法配送，請點選連結更新資料 http://reurl-fake.example/track 並登入。"},
     {"label": "legit", "scam_type": null, "content": "您好，這是您本月的電子帳單通知，可登入官方App查詢明細，本通知不會要求您提供密碼或匯款。"},
     {"label": "legit", "scam_type": null, "content": "您的訂單已出貨，預計明日送達，物流追蹤請至官網訂單查詢頁，如有問題請撥客服專線。"},
-    {"label": "legit", "scam_type": null, "content": "銀行提醒：請勿聽信任何要求操作ATM或匯款至「安全帳戶」的來電，那是詐騙。"}
+    {"label": "legit", "scam_type": null, "content": "銀行提醒：請勿聽信任何要求操作ATM或匯款至「安全帳戶」的來電，那是詐騙。"},
+    {"label": "legit", "scam_type": null, "content": "媽，我今天晚一點回家，大概八點，晚餐不用等我了。"},
+    {"label": "legit", "scam_type": null, "content": "明天早上九點開會，地點在三樓會議室，記得帶筆電。"},
+    {"label": "legit", "scam_type": null, "content": "你上次借我的書我看完了，這週末還你方便嗎？"},
+    {"label": "legit", "scam_type": null, "content": "氣象局發布大雨特報，明天出門記得帶傘注意安全。"},
+    {"label": "legit", "scam_type": null, "content": "餐廳訂位確認：本週六晚上六點，四位，已為您保留靠窗座位。"},
+    {"label": "legit", "scam_type": null, "content": "您預約的健檢報告已可領取，請於上班時間至一樓櫃台辦理。"},
+    {"label": "legit", "scam_type": null, "content": "謝謝你today的幫忙，這份報告終於完成了，下班一起吃飯吧。"},
+    {"label": "legit", "scam_type": null, "content": "社區公告：本週五上午停水兩小時進行管線維護，請提前儲水。"},
+    {"label": "legit", "scam_type": null, "content": "你訂閱的電子報這期主題是居家收納技巧，點開官方App即可閱讀。"}
   ],
   "qa_questions": [
     {"id": 1, "scam_type": "假投資", "difficulty": 1, "prompt": "收到訊息：「老師帶單保證獲利30%，加LINE進VIP群」，你該怎麼做？", "options": ["跟著加入，賺一波", "封鎖並檢舉，天下沒有穩賺不賠", "先匯小額測試看看"], "correct_idx": 1, "explanation": "「保證獲利」「穩賺不賠」是投資詐騙最典型話術，合法投資必有風險，遇到請封鎖檢舉。"},

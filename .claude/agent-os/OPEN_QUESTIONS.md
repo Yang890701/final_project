@@ -19,7 +19,6 @@
 
 ---
 
-## OQ-3 — 是否做加分項 Jetson（🟡 之後再決定）
+## OQ-3 — 加分項 Jetson（✅ 已決定 2026-06-26 → D008）
 
-- **Question**: 要不要做 Nvidia Jetson Orin Nano + 攝像頭的軟硬整合（作業加分 #7）？
-- **Recommendation**: 主功能（Phase 1–5）完成且時間有餘再評估；現在不阻塞。取決於是否有 Jetson 硬體可用。
+**決議：先寫 Jetson 邊緣端程式，待硬體再實跑。** 詳見 DECISIONS D008。

@@ -34,3 +34,35 @@
 - **Decision**: 偵測核心用 Gemini 單次 prompt 判定（是否詐騙 + 信心 + 理由）；以 PostgreSQL 歷史案例做 RAG grounding。遊戲批改與統計走 SQL/查表（非 LLM）。不微調、不 multi-agent。
 - **Rationale**: workflow-decomposer 拆解結論——詐騙話術易變、無標註訓練集、專題情境 → 微調是最脆最貴的一層；一發是 MVP，RAG 提升可解釋性與信心校準；deterministic 任務走規則零幻覺。
 - **Consequence**: schema 必須含「話術原文/特徵文本」欄位供 RAG 向量化（不能只存統計數字）；先做純一發原型，用失敗案例決定是否加 RAG；偵測端點留 Gemini-key 環境變數 + 無 key 時的規則化 fallback，確保本機可跑。
+
+---
+
+## D005 — 部署同時提供 render + AWS（2026-06-26，使用者：兩個都做）
+
+- **Decision**: 主交付以 **render**（對齊作業評分，`render.yaml`）；另附完整 **AWS** 部署設定（Dockerfile + Elastic Beanstalk / Amplify + RDS 說明）作為「計畫書完整實現」佐證。
+- **Rationale**: 作業 #2/#4 硬性要求 render，但計畫書原案是 AWS；使用者要兩邊都交代得過去。
+- **Consequence**: 新增 `deploy/aws/` 與部署指南；維護成本上升但兩套並存，render 為預設、AWS 為備援/展示。
+
+---
+
+## D006 — 偵測改「訓練模型 + Gemini 並用」（2026-06-26，使用者：對齊計畫書）
+
+- **Decision**: FastAPI 同時跑「自訓詐騙文字分類器（TF-IDF + LogisticRegression）」+ Gemini。模型負責分類與信心，Gemini 負責理由解釋與第二意見，RAG 提供 grounding。三者 ensemble。
+- **Rationale**: 計畫書明寫「FastAPI hosts the scam detection model」，自訓模型最對齊字面、也增專題深度；保留 Gemini 兼顧解釋力。修正 D004 的「不訓練模型」。
+- **Consequence**: 新增 `backend-api/model/`（train.py + 推論層）；requirements 增 scikit-learn/joblib；偵測 engine 標示為 `model+gemini+rag` / `model+rag` / `rule-fallback`（依可用資源降級）。
+
+---
+
+## D007 — 爬蟲鎖定台灣公開反詐來源（2026-06-26）
+
+- **Decision**: 統計資料優先用政府開放資料（data.gov.tw 165 反詐騙統計，合法可重用）；詐騙話術案例爬「165 全民防騙網」等公開宣導頁（先檢查 robots.txt 與條款）。
+- **Rationale**: 合法、可重用、貼近真實；同時滿足作業 #3「爬蟲」與資料真實性。
+- **Consequence**: 建對應 source adapter；尊重 robots（D 基礎建設已做）；統計類來源以開放資料 CSV/JSON 為主、話術類以動態頁爬蟲為主。
+
+---
+
+## D008 — 先寫 Jetson Orin Nano 邊緣端程式（2026-06-26，加分 #7）
+
+- **Decision**: 新增 `edge-jetson/`：攝像頭擷取 → 端側推論（OCR/影像或文字模型）→ 呼叫平台 `/api/detect`。先寫程式，待硬體再實跑。
+- **Rationale**: 作業加分項；軟硬結合展示。先備好程式不阻塞主線。
+- **Consequence**: 程式可在無 Jetson 時以 mock 攝像頭驗證流程；實機需 `playwright`/`jetson` 相依與硬體。

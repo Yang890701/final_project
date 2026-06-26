@@ -1,3 +1,6 @@
+# === ML artifacts（部署時由 train.py 重新產生）===
+*.joblib
+
 # === Python ===
 __pycache__/
 *.py[cod]
@@ -42,3 +45,6 @@ Thumbs.db
 coverage/
 htmlcov/
 .coverage
+
+# 爬蟲收集的真實資料（可由 crawler.run --gov 重生）
+db/ingested.jsonl
