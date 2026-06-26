@@ -3,9 +3,11 @@ import { RouterLink, RouterView } from "vue-router";
 
 const tabs = [
   { to: "/", label: "首頁", icon: "🏠" },
-  { to: "/detect", label: "詐騙偵測", icon: "🔍" },
+  { to: "/detect", label: "偵測中心", icon: "🔍" },
+  { to: "/chat", label: "AI問答", icon: "💬" },
   { to: "/game", label: "模擬遊戲", icon: "🎮" },
-  { to: "/stats", label: "詐騙統計", icon: "📊" },
+  { to: "/intel", label: "詐騙情報", icon: "📊" },
+  { to: "/help", label: "我被騙了", icon: "🆘" },
   { to: "/about", label: "關於我們", icon: "💙" },
 ];
 </script>

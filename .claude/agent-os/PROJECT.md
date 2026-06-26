@@ -28,6 +28,7 @@ A web platform that detects scams (model + Google Gemini), teaches users via sim
 | Completed | Phase 0–4+6 + 顧問藍圖6項(D009)：統計真實化(官方數據+誠信標示)、上線安全硬閘、held-out模型評估(Recall100%/FPR7.7%)、分析升級(ANALYSIS.md)、敘事人文(DEMO_SCRIPT/About/首頁鉤子)、繳交docs(REFLECTION/PROPOSAL_DRAFT/ARCHITECTURE/SUBMISSION_CHECKLIST)。決策D001–D009。 |
 | Next action | 使用者：部署render+填key、錄1080p、回填計畫書、釐清團隊(#8) |
 | Blocker | 僅外部資源（帳號/錄影/硬體/團隊）；程式無 blocker |
+| 功能擴充(D010) | 偵測中心(訊息/網址/電話/截圖)、AI問答(Gemini chat)、詐騙情報(警示牆+統計+圖鑑)、我被騙了求助頁、社群回報迴路。接 165 涉詐網站58k黑名單。前端7頁、build通過、live驗證。 |
 
 ## How To Resume This Project
 

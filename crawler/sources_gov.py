@@ -21,7 +21,27 @@ GOV_DEBUNK_CSV = (
     "4F4DF9A5-DF4C-4EE8-A50D-869347D38D9E/resource/"
     "0180F4A7-335D-4D69-A8D8-16E3EDEE617D/download"
 )
+# 165/刑事局「遭停止解析涉詐網站」CSV（欄位：民國年月/網域/網站性質/法律依據/聲請單位）
+GOV_SCAM_URLS_CSV = (
+    "https://opdadm.moi.gov.tw/api/v1/no-auth/resource/api/dataset/"
+    "29E8E643-88ED-4952-B21E-BD42A3B7108C/resource/"
+    "CFA7A42B-3E8B-478E-9227-A627E7816D97/download"
+)
 UA = "ScamPlatformBot/0.1 (academic project)"
+
+
+def fetch_scam_domains() -> list[str]:
+    """下載官方涉詐網站清單，回傳去重後的網域列表。"""
+    req = urllib.request.Request(GOV_SCAM_URLS_CSV, headers={"User-Agent": UA})
+    raw = urllib.request.urlopen(req, timeout=90).read()
+    reader = csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))
+    seen, out = set(), []
+    for rec in reader:
+        d = (rec.get("網域") or "").strip().lower().lstrip("www.")
+        if d and d not in seen:
+            seen.add(d)
+            out.append(d)
+    return out
 
 
 def _classify_type(text: str) -> str:

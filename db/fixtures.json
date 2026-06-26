@@ -51,5 +51,22 @@
     {"year": 2022, "category": "全部", "case_count": 29509, "loss_amount": 6960000000, "source": "刑事局2022"},
     {"year": 2023, "category": "全部", "case_count": 37823, "loss_amount": 0, "source": "刑事局2023(約3.7萬件)"},
     {"year": 2024, "category": "全部", "case_count": 122805, "loss_amount": 50200000000, "source": "刑事局/165打詐儀錶板2024"}
+  ],
+  "_scam_url_sample_note": "165/刑事局『遭停止解析涉詐網站』開放資料的真實樣本(30筆)；完整58335筆請執行 python -m crawler.run --urls。",
+  "scam_url_sample": [
+    "bbhhshf.cc", "bbshhshf.cc", "savvashop-place.store", "p2pwef.com", "saxotader.top",
+    "hkxaut.cc", "akashsystems-agv.com", "toptiertradermn.com", "uialskbzapp.top", "nx666.cc",
+    "dealloop-hot.store", "futurfftin.com", "aiofalysetwbaay.cfd", "warelyshop-nest.store", "ethena-dapp.com",
+    "tmall76567.vip", "atfxkuweb.com", "spacc11.mom", "criptonite.vip", "tmioia.com",
+    "kimi-ai.top", "trievortox.com", "wookreenergy.cc", "xweisxuk.com", "axib.me",
+    "59tuq.cc", "wowodate.com", "baexrbs.vip", "notionalweo.com"
+  ],
+  "alerts_sample": [
+    {"date": "2024/12/20", "title": "假投資詐騙：冒名金融機構與名人代言", "summary": "詐團冒用知名金融機構、財經名人在社群投放廣告，誘導加入LINE投資群組，初期小額獲利後要求加碼匯款。"},
+    {"date": "2024/11/15", "title": "假買家詐騙：超商取貨「付款失敗請解除設定」", "summary": "假冒買家或平台客服，宣稱訂單被設成分期或付款失敗，誘導賣家或買家操作ATM、網銀解除設定。"},
+    {"date": "2024/10/30", "title": "釣魚簡訊：包裹地址有誤點連結更新", "summary": "假冒物流業者發送簡訊，內含可疑短網址，誘導點擊後登入或填寫個資、信用卡號。"},
+    {"date": "2024/09/18", "title": "假冒檢警：帳戶涉案需監管帳戶", "summary": "自稱檢警或公務機關，宣稱民眾帳戶涉及洗錢，要求將存款匯入「安全/監管帳戶」配合調查。"},
+    {"date": "2024/08/05", "title": "假交友（殺豬盤）：網路戀情誘導投資", "summary": "透過交友軟體建立感情後，引導至假投資平台或宣稱海外包裹需付清關費。"},
+    {"date": "2024/07/12", "title": "假網拍：低價商品要求私下匯款", "summary": "以遠低於市價的商品吸引，要求先付款、私訊交易、貨到付款詐騙。"}
   ]
 }

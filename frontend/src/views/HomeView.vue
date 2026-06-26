@@ -2,9 +2,12 @@
 import { useRouter } from "vue-router";
 const router = useRouter();
 const features = [
-  { icon: "🔍", title: "詐騙偵測", desc: "貼上可疑訊息或網址，AI（自訓模型 + Gemini）判斷是否詐騙並解釋理由。", to: "/detect" },
+  { icon: "🔍", title: "偵測中心", desc: "訊息 / 網址 / 電話 / 截圖四合一檢測，AI + 官方黑名單判斷是否詐騙。", to: "/detect" },
+  { icon: "💬", title: "AI 問答助手", desc: "用聊天的方式問任何防詐問題，可以追問。", to: "/chat" },
   { icon: "🎮", title: "模擬遊戲", desc: "情境問答，邊玩邊學會辨識常見詐騙手法。", to: "/game" },
-  { icon: "📊", title: "詐騙統計", desc: "官方年度趨勢與我們收集的真實案例類型分布。", to: "/stats" },
+  { icon: "📊", title: "詐騙情報", desc: "最新手法警示牆、官方統計趨勢、手法圖鑑。", to: "/intel" },
+  { icon: "🆘", title: "我被騙了", desc: "受害當下的即時行動步驟與求助管道。", to: "/help" },
+  { icon: "💙", title: "關於我們", desc: "我們為什麼做、怎麼做、資料來源與限制。", to: "/about" },
 ];
 </script>
 

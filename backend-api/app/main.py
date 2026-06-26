@@ -15,6 +15,10 @@ from pydantic import BaseModel
 
 from .data import get_stats, using_db
 from .detect import detect
+from .urlcheck import check_url, blocklist_size
+from .community import check_phone, add_report
+from .assistant import chat
+from .alerts import get_alerts
 
 # 允許的前端來源（逗號分隔）；預設只開本機開發。上線時設成你的前端網域。
 ALLOWED_ORIGINS = [
@@ -50,6 +54,25 @@ class DetectIn(BaseModel):
     text: str
 
 
+class UrlIn(BaseModel):
+    url: str
+
+
+class PhoneIn(BaseModel):
+    phone: str
+
+
+class ReportIn(BaseModel):
+    kind: str
+    value: str
+    note: str = ""
+
+
+class ChatIn(BaseModel):
+    message: str
+    history: list[dict] = []
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "backend-api", "db": using_db()}
@@ -64,6 +87,43 @@ def api_detect(body: DetectIn, request: Request):
             content={"error": f"請求過於頻繁，請稍候再試（每 {RATE_WINDOW} 秒上限 {RATE_LIMIT} 次）。"},
         )
     return detect(body.text)
+
+
+@app.post("/api/url-check")
+def api_url_check(body: UrlIn, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    if not _rate_ok(ip):
+        return JSONResponse(status_code=429, content={"error": "請求過於頻繁，請稍候再試。"})
+    return {**check_url(body.url), "blocklist_size": blocklist_size()}
+
+
+@app.post("/api/phone-check")
+def api_phone_check(body: PhoneIn, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    if not _rate_ok(ip):
+        return JSONResponse(status_code=429, content={"error": "請求過於頻繁，請稍候再試。"})
+    return check_phone(body.phone)
+
+
+@app.post("/api/report")
+def api_report(body: ReportIn, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    if not _rate_ok(ip):
+        return JSONResponse(status_code=429, content={"error": "請求過於頻繁，請稍候再試。"})
+    return add_report(body.kind, body.value, body.note)
+
+
+@app.post("/api/chat")
+def api_chat(body: ChatIn, request: Request):
+    ip = request.client.host if request.client else "unknown"
+    if not _rate_ok(ip):
+        return JSONResponse(status_code=429, content={"error": "請求過於頻繁，請稍候再試。"})
+    return chat(body.message, body.history)
+
+
+@app.get("/api/alerts")
+def api_alerts(limit: int = 10):
+    return get_alerts(limit)
 
 
 @app.get("/api/stats")

@@ -48,3 +48,9 @@ htmlcov/
 
 # 爬蟲收集的真實資料（可由 crawler.run --gov 重生）
 db/ingested.jsonl
+
+# 官方涉詐網域黑名單(可由 crawler.run --urls 重生，58k筆過大不入庫)
+db/scam_urls.txt
+
+# 使用者社群回報(執行期累積)
+db/reported.jsonl

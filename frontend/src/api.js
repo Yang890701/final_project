@@ -18,7 +18,12 @@ async function jpost(url, body) {
 }
 
 export const detect = (text) => jpost(`${API}/api/detect`, { text });
-export const getStats = (from = 2021, to = 2025) =>
+export const checkUrl = (url) => jpost(`${API}/api/url-check`, { url });
+export const checkPhone = (phone) => jpost(`${API}/api/phone-check`, { phone });
+export const report = (kind, value, note = "") => jpost(`${API}/api/report`, { kind, value, note });
+export const chat = (message, history = []) => jpost(`${API}/api/chat`, { message, history });
+export const getAlerts = (limit = 10) => jget(`${API}/api/alerts?limit=${limit}`);
+export const getStats = (from = 2020, to = 2025) =>
   jget(`${API}/api/stats?from=${from}&to=${to}`);
 export const getQuestions = (limit = 5) =>
   jget(`${NODE}/api/games/questions?limit=${limit}`);
