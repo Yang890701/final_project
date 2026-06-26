@@ -1,0 +1,47 @@
+# render Blueprint — 一鍵部署前端 + 雙後端 + PostgreSQL
+# 文件：https://render.com/docs/blueprint-spec
+# 注意：實際 build/start 指令待各子專案就緒後校正；密鑰（GEMINI_API_KEY 等）在 render 後台填，勿入庫。
+
+databases:
+  - name: scam-db
+    databaseName: scam
+    plan: free
+
+services:
+  # --- Python FastAPI：偵測模型 / 統計 / Gemini ---
+  - type: web
+    name: backend-api
+    runtime: python
+    plan: free
+    rootDir: backend-api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scam-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # --- Node.js：模擬遊戲路由 / 問答對 ---
+  - type: web
+    name: backend-node
+    runtime: node
+    plan: free
+    rootDir: backend-node
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scam-db
+          property: connectionString
+
+  # --- Vue 前端：靜態網站 ---
+  - type: web
+    name: frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
