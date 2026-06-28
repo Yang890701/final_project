@@ -12,6 +12,13 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parents[2]
 
 
+def _sql_statements(sql: str) -> list[str]:
+    cleaned = "\n".join(
+        line for line in sql.splitlines() if not line.lstrip().startswith("--")
+    )
+    return [stmt.strip() for stmt in cleaned.split(";") if stmt.strip()]
+
+
 def init_db() -> None:
     url = os.getenv("DATABASE_URL")
     if not url:
@@ -27,10 +34,8 @@ def init_db() -> None:
         # 1) 確保 schema（schema.sql 全用 IF NOT EXISTS，可重複執行）
         schema = (_ROOT / "db" / "schema.sql").read_text(encoding="utf-8")
         with eng.begin() as c:
-            for stmt in schema.split(";"):
-                s = stmt.strip()
-                if s and not s.startswith("--"):
-                    c.execute(text(s))
+            for stmt in _sql_statements(schema):
+                c.execute(text(stmt))
 
         # 2) 若空則灌種子
         with eng.begin() as c:
