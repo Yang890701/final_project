@@ -20,8 +20,10 @@ MODEL_PATH = Path(__file__).resolve().parent / "scam_clf.joblib"
 def load_training_data() -> "tuple[list[str], list[int]]":
     url = os.getenv("DATABASE_URL")
     if url:
+        from app.init_db import init_db
         from sqlalchemy import create_engine, text
 
+        init_db()
         u = url.replace("postgres://", "postgresql+psycopg://", 1).replace(
             "postgresql://", "postgresql+psycopg://", 1
         )
