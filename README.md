@@ -1,4 +1,8 @@
-# 反詐平台（Scam Detection Platform）
+# 安心盾 · 反詐平台（Scam Detection Platform）
+
+> 🌐 **線上 Demo**：https://frontend-lvy6.onrender.com/#/ （render 免費方案，首次開啟需等 ~30–50 秒喚醒後端）
+> 📦 **繳交資料**：見 `繳交資料/`（PDF）
+
 
 偵測詐騙（模型 + Google Gemini）＋模擬遊戲教學＋詐騙統計視覺化（2021–2025）的網站。期末專題。
 
